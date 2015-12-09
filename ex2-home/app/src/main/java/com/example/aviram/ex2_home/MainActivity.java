@@ -2,6 +2,7 @@ package com.example.aviram.ex2_home;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -19,6 +21,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private  int level,complexity;
     private drawAnimation animation;
     private Button btSetting,btStart;
+    private long start_time,elapse_time;
+    private double time_difference;
+    private TextView tvRecent,tvBest;
     //private Task task;
 
     @Override
@@ -26,6 +31,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+       // this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         Initialization();
 
         animation=(drawAnimation)findViewById(R.id.layoutToDraw);
@@ -42,10 +48,12 @@ public class MainActivity extends Activity implements View.OnClickListener{
             startActivity(settingInetent);
         }
         if (v.getId()==R.id.buttonStart) {
-           double time=animation.startGame();
-            editor.putInt("game",1);//put the date in sharedPref
-            editor.apply();
-           new Task().execute();
+            start_time = android.os.SystemClock.uptimeMillis();
+            Log.i("aviramLog", "start_time: "+start_time);
+            animation.startGame(start_time);
+          /*  editor.putInt("game",1);//put the date in sharedPref
+            editor.apply();*/
+           //new Task().execute();
         }
 
     }
@@ -56,6 +64,17 @@ public class MainActivity extends Activity implements View.OnClickListener{
         return true;
     }
 
+    public void stopGame(long start_time) {
+
+        long elapse_time = android.os.SystemClock.uptimeMillis() - start_time;
+        time_difference = (double) elapse_time;
+        time_difference = time_difference / 1000;//time in sec
+        //Toast.makeText(getApplicationContext(), "finsh the game you time is:" + time_difference, Toast.LENGTH_SHORT).show();
+
+        Log.i("aviramLog", "your time is: " + time_difference);
+        //tvRecent.setText("youe score is: " + time_difference + " seconds");
+       // tvRecent.setText(Double.toString(time_difference));
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -78,6 +97,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
         btSetting=(Button)findViewById(R.id.buttonSetting);
         btSetting.setOnClickListener(this);
+
+        tvBest=(TextView)findViewById(R.id.textViewBest);
+        tvRecent=(TextView)findViewById(R.id.textViewRecent);
 
         sharedPref = getSharedPreferences("prefBestScore", MODE_PRIVATE);
         editor = sharedPref.edit();
@@ -127,7 +149,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
             Log.i("aviramLog", "befor while");
             while (true)
             {
-                gameFlag=sharedPref.getInt("game", 100);Log.i("aviramLog", "gameFlag: "+gameFlag);
+                gameFlag=sharedPref.getInt("game", 100);
+                Log.i("aviramLog", "gameFlag: "+gameFlag);
                 if (gameFlag==0)
                 {
                     Log.i("aviramLog", "in if");

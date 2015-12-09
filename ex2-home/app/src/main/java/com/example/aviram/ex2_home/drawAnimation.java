@@ -30,9 +30,8 @@ public class drawAnimation extends View  {
     private int x_Circle, y_Circle;
     private int[] arrCenter;
     private int rectWidth, rectHight;
-    private long start_time,elapse_time;
+    private long start_time;
     private boolean startGame;
-    private double time_difference;
     private final int LEVEL;
 
 
@@ -177,15 +176,10 @@ public class drawAnimation extends View  {
                 if (rectangle.contains(x, y)) {
                     level--;
                     if (level == 0) {
-                        elapse_time = android.os.SystemClock.uptimeMillis() - start_time;
-                        time_difference = (double) elapse_time;
-                        time_difference = time_difference / 1000;//time in sec
-                        Toast.makeText(contextSAVE.getApplicationContext(), "finsh the game you time is:" + time_difference, Toast.LENGTH_SHORT).show();
                         level = LEVEL;
                         startGame=false;
-
-                        editor.putInt("game",0);//put the date in sharedPref
-                        editor.apply();
+                        MainActivity temp=new MainActivity();
+                        temp.stopGame(start_time);
                     }
                     invalidate();
                 }
@@ -193,13 +187,10 @@ public class drawAnimation extends View  {
         }
         return true;
     }
-    public double startGame()
+    public void startGame(long start_timeMain)
     {
-        start_time = android.os.SystemClock.uptimeMillis();
+        start_time=start_timeMain;
         startGame=true;
-
-        Log.i("aviramLog", "finis-return time:" + time_difference);
-        return time_difference;
     }
     public boolean getStartGame()
     {
