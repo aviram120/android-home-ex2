@@ -23,17 +23,18 @@
         android:background="#65b4ff"
         android:id="@+id/textViewBest"
         android:text="@string/best"
-        android:layout_below="@+id/textViewRecent"
-        android:layout_alignParentEnd="true" />
+        android:layout_centerVertical="true"
+        android:layout_alignEnd="@+id/textViewRecent"
+        android:layout_alignStart="@+id/textViewRecent" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/settings"
         android:id="@+id/buttonSetting"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="51dp"
-        android:layout_alignStart="@+id/textViewBest" />
+        android:layout_marginBottom="26dp"
+        android:layout_alignBottom="@+id/layoutToDraw"
+        android:layout_alignEnd="@+id/textViewBest" />
 
     <Button
         android:layout_width="wrap_content"

@@ -14,7 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class MainActivity extends Activity implements View.OnClickListener{
+public class MainActivity extends Activity implements View.OnClickListener,MyListener{
 
     private SharedPreferences sharedPref;
     private SharedPreferences.Editor editor;
@@ -31,14 +31,17 @@ public class MainActivity extends Activity implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-       // this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         Initialization();
+    }
+    public void onGameFinishLisrener(){
+        Log.i("aviramLog", "=============from main");
 
-        animation=(drawAnimation)findViewById(R.id.layoutToDraw);
-        //setContentView(animation);
-
-      // task = new Task();
-
+        long elapse_time = android.os.SystemClock.uptimeMillis() - start_time;
+        time_difference = (double) elapse_time;
+        time_difference = time_difference / 1000;//time in sec
+        //Toast.makeText(getApplicationContext(), "finsh the game you time is:" + time_difference, Toast.LENGTH_SHORT).show();
+        tvRecent.setText(""+time_difference);
+        Log.i("aviramLog", "your time is: " + time_difference);
 
     }
     public void onClick(View v) {
@@ -50,30 +53,14 @@ public class MainActivity extends Activity implements View.OnClickListener{
         if (v.getId()==R.id.buttonStart) {
             start_time = android.os.SystemClock.uptimeMillis();
             Log.i("aviramLog", "start_time: "+start_time);
-            animation.startGame(start_time);
-          /*  editor.putInt("game",1);//put the date in sharedPref
-            editor.apply();*/
-           //new Task().execute();
+            animation.startGame();
         }
-
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
-    }
-
-    public void stopGame(long start_time) {
-
-        long elapse_time = android.os.SystemClock.uptimeMillis() - start_time;
-        time_difference = (double) elapse_time;
-        time_difference = time_difference / 1000;//time in sec
-        //Toast.makeText(getApplicationContext(), "finsh the game you time is:" + time_difference, Toast.LENGTH_SHORT).show();
-
-        Log.i("aviramLog", "your time is: " + time_difference);
-        //tvRecent.setText("youe score is: " + time_difference + " seconds");
-       // tvRecent.setText(Double.toString(time_difference));
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -100,6 +87,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
         tvBest=(TextView)findViewById(R.id.textViewBest);
         tvRecent=(TextView)findViewById(R.id.textViewRecent);
+
+        animation=(drawAnimation)findViewById(R.id.layoutToDraw);
+        animation.setMyListener(this);
 
         sharedPref = getSharedPreferences("prefBestScore", MODE_PRIVATE);
         editor = sharedPref.edit();

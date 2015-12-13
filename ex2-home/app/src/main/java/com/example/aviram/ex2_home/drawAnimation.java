@@ -16,10 +16,11 @@ import android.app.Activity;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 
-public class drawAnimation extends View  {
+public class  drawAnimation extends View  {
 
     private SharedPreferences sharedPref;
     private SharedPreferences.Editor editor;
@@ -30,15 +31,14 @@ public class drawAnimation extends View  {
     private int x_Circle, y_Circle;
     private int[] arrCenter;
     private int rectWidth, rectHight;
-    private long start_time;
     private boolean startGame;
     private final int LEVEL;
+    private ArrayList<MyListener> listeners = new ArrayList<MyListener>();
 
 
     public drawAnimation(Context context, AttributeSet attrs) {
         super(context, attrs);
         contextSAVE = context;
-
 
         sharedPref = context.getSharedPreferences("prefBestScore", context.MODE_PRIVATE);
 
@@ -52,7 +52,9 @@ public class drawAnimation extends View  {
         startGame=false;
     }
 
-
+    public void setMyListener(MyListener listener){
+        listeners.add(listener);
+    }
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -178,8 +180,9 @@ public class drawAnimation extends View  {
                     if (level == 0) {
                         level = LEVEL;
                         startGame=false;
-                        MainActivity temp=new MainActivity();
-                        temp.stopGame(start_time);
+                        for (MyListener listener:listeners){//send to MainActivity that finish the game
+                            listener.onGameFinishLisrener();
+                        }
                     }
                     invalidate();
                 }
@@ -187,15 +190,11 @@ public class drawAnimation extends View  {
         }
         return true;
     }
-    public void startGame(long start_timeMain)
+    public void startGame()
     {
-        start_time=start_timeMain;
         startGame=true;
     }
-    public boolean getStartGame()
-    {
-        return this.startGame;
-    }
+
 
 
 }
