@@ -3,6 +3,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +25,7 @@ public class MainActivity extends Activity implements View.OnClickListener,MyLis
     private long start_time,elapse_time;
     private double time_difference;
     private TextView tvRecent,tvBest;
+    public DAL dal;
     //private Task task;
 
     @Override
@@ -34,15 +36,21 @@ public class MainActivity extends Activity implements View.OnClickListener,MyLis
         Initialization();
     }
     public void onGameFinishLisrener(){
-        Log.i("aviramLog", "=============from main");
+        Log.i("aviramLog", "======GameFinish======");
 
         long elapse_time = android.os.SystemClock.uptimeMillis() - start_time;
         time_difference = (double) elapse_time;
         time_difference = time_difference / 1000;//time in sec
         //Toast.makeText(getApplicationContext(), "finsh the game you time is:" + time_difference, Toast.LENGTH_SHORT).show();
-        tvRecent.setText(""+time_difference);
+
+        tvRecent.setText("Recent Result:\n" + time_difference + " sec");
         Log.i("aviramLog", "your time is: " + time_difference);
 
+      boolean newRecord=dal.addScore(level, complexity, time_difference + "");//add/updata the record in db
+        if (newRecord)//have a new record
+        {
+            tvBest.setText("Best Result:\n"+time_difference);
+        }
     }
     public void onClick(View v) {
         if (v.getId()==R.id.buttonSetting)
@@ -79,6 +87,8 @@ public class MainActivity extends Activity implements View.OnClickListener,MyLis
     }
     private void Initialization()
     {
+        dal = new DAL(getApplicationContext());
+
         btStart=(Button)findViewById(R.id.buttonStart);
         btStart.setOnClickListener(this);
 
@@ -108,9 +118,15 @@ public class MainActivity extends Activity implements View.OnClickListener,MyLis
             Log.i("aviramLog", "first complexity");
         }
 
-        Log.i("aviramLog", "level:" + sharedPref.getInt("level", 100));//counter of click
-        Log.i("aviramLog", "complexity:"+sharedPref.getInt("complexity",100));//number of circle
+        level=sharedPref.getInt("level", 1);
+        complexity=sharedPref.getInt("complexity",0);
+        Log.i("aviramLog", "level:" +level );//counter of click
+        Log.i("aviramLog", "complexity:" + complexity);//number of circle
 
+
+        tvBest.setText("Best Result:\n"+dal.getBestScore(level,complexity));
+
+        dal.getAllTimeEntriesCursor();//print to log all DB
     }
 
     @Override
