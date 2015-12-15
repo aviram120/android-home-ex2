@@ -11,7 +11,8 @@
         android:text="@string/action_settings"
         android:id="@+id/textView2"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_toEndOf="@+id/textView4"
+        android:layout_marginTop="20dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -59,9 +60,9 @@
         android:layout_height="wrap_content"
         android:text="@string/saveButton"
         android:id="@+id/buttonSave"
-        android:layout_marginBottom="84dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_below="@+id/textView4"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="45dp" />
 
 
 </RelativeLayout>

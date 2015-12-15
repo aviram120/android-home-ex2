@@ -1,57 +1,85 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
 
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
-    <TextView
+
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:background="#65b4ff"
-        android:id="@+id/textViewRecent"
-        android:text="@string/recent"
-        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="48dp" />
+        android:layout_alignParentTop="true">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:background="#65b4ff"
-        android:id="@+id/textViewBest"
-        android:text="@string/best"
-        android:layout_centerVertical="true"
-        android:layout_alignEnd="@+id/textViewRecent"
-        android:layout_alignStart="@+id/textViewRecent" />
+        <com.example.aviram.ex2_home.drawAnimation
+            android:id="@+id/layoutToDraw"
+            android:layout_width="443dp"
+            android:layout_height="293dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_toStartOf="@+id/textViewRecent" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/settings"
-        android:id="@+id/buttonSetting"
-        android:layout_marginBottom="26dp"
-        android:layout_alignBottom="@+id/layoutToDraw"
-        android:layout_alignEnd="@+id/textViewBest" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/start"
-        android:id="@+id/buttonStart"
-        android:layout_alignTop="@+id/layoutToDraw"
-        android:layout_alignParentEnd="true" />
-
-    <com.example.aviram.ex2_home.drawAnimation
-        android:id="@+id/layoutToDraw"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="136dp"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_toStartOf="@+id/textViewRecent" />
+       >
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/start"
+            android:id="@+id/buttonStart"
+            android:layout_marginBottom="20dp"
+             />
+
+
+
+        <TextView
+
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:background="#65b4ff"
+            android:id="@+id/textViewRecent"
+            android:text="@string/recent"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:background="#65b4ff"
+            android:id="@+id/textViewBest"
+            android:text="@string/best"
+
+            />
+
+        <Button
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settings"
+            android:id="@+id/buttonSetting"
+            android:layout_alignParentBottom="true"
+            />
+
+    </LinearLayout>
+
+
+
+
+    </LinearLayout>
+
+
+
+
 
 
 </RelativeLayout>
