@@ -56,7 +56,6 @@ public class  drawAnimation extends View  {
   protected void onDraw(Canvas canvas) {
     super.onDraw(canvas);
 
-
     //set color
     red_paintbrush_fill = new Paint();
     red_paintbrush_fill.setColor(Color.RED);
@@ -70,23 +69,29 @@ public class  drawAnimation extends View  {
     rectangle = new Rect(0 + moveRect, 0 + moveRect, moveRect + rectWidth, moveRect + rectHight);
     canvas.drawRect(rectangle, red_paintbrush_fill);
 
-    for (int i = 0; i < numCircle; i++) {
-      while (generateXY(canvas, i)) ;//check is the circle isn't in any shape
+    for (int i = 0; i < numCircle; i++)
+    {
+     /* while (true)
+      {
+        if (!generateXY(canvas, i))
+        {
+          break;
+        }
+      }*/
+      while (generateXY(canvas, i));//check is the circle isn't in any shape
 
-      //Log.i("aviramLog", "x:" + x_Circle + ",y:" + y_Circle);
-      arrCenter[i] = x_Circle;
-      arrCenter[i + 1] = y_Circle;
+      //Log.i("aviramLog", "i:"+i+" ,x:" + x_Circle + ",y:" + y_Circle);
+      arrCenter[i*2] = x_Circle;
+      arrCenter[i*2 + 1] = y_Circle;
       canvas.drawCircle(x_Circle, y_Circle, radiosCircle, red_paintbrush_fill);//darw circle
     }
-
-
-    //invalidate();
   }
 
   private boolean generateXY(Canvas canvas,int idOfCircle)
   {//the function make random x and y for the cirlce , and check if is valid
 
     Random rand = new Random();
+
 
     //select random number for the center of the circle
     x_Circle=rand.nextInt(canvas.getWidth()-radiosCircle*2)+radiosCircle;
@@ -99,17 +104,19 @@ public class  drawAnimation extends View  {
       return false;
     }
 
-    for(int i=0; i<idOfCircle; i++)//run of akk the other circle
+    for(int i=0; i<idOfCircle; i++)//run of arr of the other circle
     {
-      int x=arrCenter[i];
-      int y=arrCenter[i+1];
+      int x=arrCenter[i*2];
+      int y=arrCenter[i*2+1];
 
       double des= (Math.pow((x-x_Circle), 2)+Math.pow((y-y_Circle), 2));
       des=Math.pow(des,0.5);
-      if (des-10<=radiosCircle)//if the cordntion is in the other circle
+     // Log.i("aviramLog", "i:"+i+" ,x_Circle:" + x_Circle + " ,y_Circle:" + y_Circle+ " ,x:"+x+" ,y:"+y+" ,des:"+des);
+      if (des<=radiosCircle*2)//if the cordntion is in the other circle
       {
         return false;
       }
+
     }
     return true;
   }
@@ -147,6 +154,20 @@ public class  drawAnimation extends View  {
     if (!checkDistance(leftBottomX,leftBottomY))
       return false;
 
+    if (rectangle.contains(x_Circle,y_Circle))
+      return false;
+
+    if (rectangle.contains(x_Circle,y_Circle+radiosCircle))
+      return false;
+
+    if (rectangle.contains(x_Circle-radiosCircle,y_Circle))
+      return false;
+
+    if (rectangle.contains(x_Circle,y_Circle-radiosCircle))
+      return false;
+
+    if (rectangle.contains(x_Circle+radiosCircle,y_Circle))
+      return false;
 
     return true;
   }
@@ -171,7 +192,6 @@ public class  drawAnimation extends View  {
         int x = (int) event.getX();//some math logic to plot the rect  in exact touch place
         int y = (int) event.getY();
 
-        Log.i("aviramLog", "level:" + level);
         if (rectangle.contains(x, y)) {
           level--;
           if (level == 0) {
@@ -191,7 +211,10 @@ public class  drawAnimation extends View  {
   {
     startGame=true;
   }
-
+  public void stopGame()
+  {
+    startGame=false;
+  }
 
 
 }

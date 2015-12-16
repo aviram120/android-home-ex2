@@ -47,6 +47,7 @@ public class MainActivity extends Activity implements View.OnClickListener,MyLis
   public void onGameFinishLisrener(){
     gameRum=false;
     btSetting.setClickable(true);
+    btStart.setClickable(true);
     Log.i("aviramLog", "======GameFinish======");
 
     long elapse_time = android.os.SystemClock.uptimeMillis() - start_time;
@@ -72,6 +73,7 @@ public class MainActivity extends Activity implements View.OnClickListener,MyLis
         break;
 
       case R.id.buttonStart:
+        btStart.setClickable(false);
         gameRum=true;
         timeInTask=0;
 
@@ -192,13 +194,20 @@ private void setSetting()
   @Override
   protected void onStop() {
     super.onStop();
-
-
+    gameRum=false;
+    animation.stopGame();
+    Log.i("aviramLog", "onStop");
   }
 
-  @Override
-  protected void onPause() {
-    super.onPause();
+
+  public void onResume() {
+    super.onResume();
+    Log.i("aviramLog", "onResume");
+
+    btStart.setClickable(true);
+    btSetting.setClickable(true);
+    tvRecent.setText("Recent Result:\n" );
+
   }
 
   private class Task extends AsyncTask<Void, Integer, Integer> {
@@ -235,7 +244,7 @@ private void setSetting()
     protected void onPostExecute(Integer result) {
       //super.onPostExecute(result);
 
-     Log.i("aviramLog1", "+++onPostExecute: "+result);
+      Log.i("aviramLog1", "+++onPostExecute: "+result);
       tvRecent.setText("Recent Result:\n" + time_difference + " sec");
 
     }
