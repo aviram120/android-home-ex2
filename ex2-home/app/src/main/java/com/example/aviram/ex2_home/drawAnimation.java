@@ -1,6 +1,5 @@
 package com.example.aviram.ex2_home;
 
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
@@ -11,11 +10,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-
-
 import java.util.ArrayList;
 import java.util.Random;
-
 
 public class  drawAnimation extends View  {
 
@@ -48,14 +44,13 @@ public class  drawAnimation extends View  {
     rectHight = 200;
     startGame=false;
   }
-
   public void setMyListener(MyListener listener){
     listeners.add(listener);
   }
-  @Override
   protected void onDraw(Canvas canvas) {
     super.onDraw(canvas);
 
+    boolean flagRandom;
     //set color
     red_paintbrush_fill = new Paint();
     red_paintbrush_fill.setColor(Color.RED);
@@ -65,126 +60,110 @@ public class  drawAnimation extends View  {
 
     //set the rectangle in screen
     int moveRect = (int) (Math.random() * 1000 + 0);
-    //Log.i("aviramLog", "moveRect:" + moveRect);
     rectangle = new Rect(0 + moveRect, 0 + moveRect, moveRect + rectWidth, moveRect + rectHight);
     canvas.drawRect(rectangle, red_paintbrush_fill);
 
     for (int i = 0; i < numCircle; i++)
     {
-     /* while (true)
-      {
-        if (!generateXY(canvas, i))
-        {
-          break;
-        }
-      }*/
-      while (generateXY(canvas, i));//check is the circle isn't in any shape
+      while (!makeXYCenter(canvas,i));//set the circle in the screen
 
-      //Log.i("aviramLog", "i:"+i+" ,x:" + x_Circle + ",y:" + y_Circle);
+      //save the center
       arrCenter[i*2] = x_Circle;
       arrCenter[i*2 + 1] = y_Circle;
-      canvas.drawCircle(x_Circle, y_Circle, radiosCircle, red_paintbrush_fill);//darw circle
+
+      canvas.drawCircle(x_Circle, y_Circle, radiosCircle, red_paintbrush_fill);//draw circle
     }
   }
+  private boolean makeXYCenter(Canvas canvas,int idCircle) {
+    /*the function generate (random_ point-center for the circle
+            A. check if the point is outside of rectangle
+            B. check if the new circle isn't in the other circle
+            if OK return true
+          * */
 
-  private boolean generateXY(Canvas canvas,int idOfCircle)
-  {//the function make random x and y for the cirlce , and check if is valid
-
+    int height=canvas.getHeight();
+    int width=canvas.getWidth();
     Random rand = new Random();
 
+    int  xCenter =rand.nextInt(width-radiosCircle*2) + radiosCircle;
+    int yCenter=rand.nextInt(height-radiosCircle*2)+radiosCircle;
 
-    //select random number for the center of the circle
-    x_Circle=rand.nextInt(canvas.getWidth()-radiosCircle*2)+radiosCircle;
-    y_Circle=rand.nextInt(canvas.getHeight()-radiosCircle*2)+radiosCircle;
-    //Log.i("aviramLog", "from while x:" + x_Circle + ",y:" + y_Circle);
-
-
-    if (checkIfPointIsInRectangel())//if the cordntion isn't in the rectangle
+    if (checkIfCircleInRectangle(xCenter,yCenter)==false)//check if the point is outside of rectangle
     {
       return false;
     }
 
-    for(int i=0; i<idOfCircle; i++)//run of arr of the other circle
+    if(checkIfCircleInCircle(xCenter,yCenter,idCircle)==false)//check if the new circle isn't in the other circle
     {
-      int x=arrCenter[i*2];
-      int y=arrCenter[i*2+1];
+      return false;
+    }
 
-      double des= (Math.pow((x-x_Circle), 2)+Math.pow((y-y_Circle), 2));
-      des=Math.pow(des,0.5);
-     // Log.i("aviramLog", "i:"+i+" ,x_Circle:" + x_Circle + " ,y_Circle:" + y_Circle+ " ,x:"+x+" ,y:"+y+" ,des:"+des);
-      if (des<=radiosCircle*2)//if the cordntion is in the other circle
+    //set the center
+    x_Circle=xCenter;
+    y_Circle=yCenter;
+
+    return true;
+  }
+  private boolean checkIfCircleInRectangle(int xCenter,int yCenter) { //the function return false if the point is in the rectangle
+
+    if (rectangle.contains(xCenter,yCenter))//in the rectangle
+    {
+      return false;
+    }
+    if (rectangle.contains(xCenter,yCenter+radiosCircle))//in the rectangle
+    {
+      return false;
+    }
+    if (rectangle.contains(xCenter-radiosCircle,yCenter))//in the rectangle
+    {
+      return false;
+    }
+    if (rectangle.contains(xCenter,yCenter-radiosCircle))//in the rectangle
+    {
+      return false;
+    }
+    if (rectangle.contains(xCenter+radiosCircle,yCenter))//in the rectangle
+    {
+      return false;
+    }
+
+    if (rectangle.contains(xCenter-radiosCircle,yCenter+radiosCircle))//in the rectangle
+    {
+      return false;
+    }
+    if (rectangle.contains(xCenter-radiosCircle,yCenter-radiosCircle))//in the rectangle
+    {
+      return false;
+    }
+    if (rectangle.contains(xCenter+radiosCircle,yCenter-radiosCircle))//in the rectangle
+    {
+      return false;
+    }
+    if (rectangle.contains(xCenter+radiosCircle,yCenter+radiosCircle))//in the rectangle
+    {
+      return false;
+    }
+
+    return true;
+  }
+  private boolean checkIfCircleInCircle(int xCenter,int yCenter,int idCircle) { //the function return false if the point is in the other circle
+
+    int xOther,yOther,distance;
+
+    for (int i=0;i<idCircle; i++)//run of all circle
+    {
+      xOther=arrCenter[i*2];
+      yOther=arrCenter[i*2+1];
+      distance = (int)Math.sqrt((xOther-xCenter)*(xOther-xCenter) + (yOther-yCenter)*(yOther-yCenter));
+      if(distance<radiosCircle*2+10)
       {
         return false;
       }
-
-    }
-    return true;
-  }
-  private boolean checkIfPointIsInRectangel()
-  {//the fucntion check if the circe isn't in the rectangle
-
-    int leftTopX,leftTopY,rightBottomX,rightBottomY;
-    int rightTopX,rightTopY,leftBottomX,leftBottomY;
-
-    leftTopX=rectangle.left;
-    leftTopY=rectangle.top;
-
-    rightBottomX=rectangle.right;
-    rightBottomY=rectangle.bottom;
-
-    rightTopX=leftTopX+rectWidth;
-    rightTopY=leftTopY;
-
-    leftBottomX=leftTopX;
-    leftBottomY=leftTopY+rectHight;
-
-    //left top point
-    if (!checkDistance(leftTopX, leftTopY))
-      return false;
-
-    //right bottom point
-    if (!checkDistance(rightBottomX,rightBottomY))
-      return false;
-
-    //right top point
-    if (!checkDistance(rightTopX,rightTopY))
-      return false;
-
-    //left bottom point
-    if (!checkDistance(leftBottomX,leftBottomY))
-      return false;
-
-    if (rectangle.contains(x_Circle,y_Circle))
-      return false;
-
-    if (rectangle.contains(x_Circle,y_Circle+radiosCircle))
-      return false;
-
-    if (rectangle.contains(x_Circle-radiosCircle,y_Circle))
-      return false;
-
-    if (rectangle.contains(x_Circle,y_Circle-radiosCircle))
-      return false;
-
-    if (rectangle.contains(x_Circle+radiosCircle,y_Circle))
-      return false;
-
-    return true;
-  }
-  private boolean checkDistance(int pointX,int pointY)
-  {//check the dis between the point to the radios-circle
-
-    double dis= (Math.pow((pointX-x_Circle), 2)+Math.pow((pointY-y_Circle), 2));
-    dis=Math.pow(dis,0.5);
-    if (dis<=radiosCircle)
-    {
-      return false;
     }
 
     return true;
   }
-  public boolean onTouchEvent(MotionEvent event)
-  {
+  public boolean onTouchEvent(MotionEvent event) {
     if(startGame)
     {
       if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -215,6 +194,4 @@ public class  drawAnimation extends View  {
   {
     startGame=false;
   }
-
-
 }
