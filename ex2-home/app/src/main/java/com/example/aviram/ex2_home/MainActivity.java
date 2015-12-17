@@ -1,11 +1,10 @@
 package com.example.aviram.ex2_home;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
-import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,10 +14,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import java.text.DecimalFormat;
-
 
 public class MainActivity extends Activity implements View.OnClickListener,MyListener{
 
@@ -35,9 +31,8 @@ public class MainActivity extends Activity implements View.OnClickListener,MyLis
   private boolean gameRum;
   private double timeInTask;
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
 
+  protected void onCreate(Bundle savedInstanceState){
     super.onCreate(savedInstanceState);
     requestWindowFeature(Window.FEATURE_NO_TITLE);//delete the name of the project
     setContentView(R.layout.activity_main);
@@ -45,7 +40,9 @@ public class MainActivity extends Activity implements View.OnClickListener,MyLis
     Initialization();
   }
   public void onGameFinishLisrener(){
-    gameRum=false;
+    //the function run when the game is finish
+
+    gameRum=false;//for task
     btSetting.setClickable(true);
     btStart.setClickable(true);
     Log.i("aviramLog", "======GameFinish======");
@@ -53,7 +50,6 @@ public class MainActivity extends Activity implements View.OnClickListener,MyLis
     long elapse_time = android.os.SystemClock.uptimeMillis() - start_time;
     time_difference = (double) elapse_time;
     time_difference = time_difference / 1000;//time in sec
-    //Toast.makeText(getApplicationContext(), "finsh the game you time is:" + time_difference, Toast.LENGTH_SHORT).show();
 
     tvRecent.setText("Recent Result:\n" + time_difference + " sec");
     Log.i("aviramLog", "your time is: " + time_difference);
@@ -64,7 +60,7 @@ public class MainActivity extends Activity implements View.OnClickListener,MyLis
       tvBest.setText("Best Result:\n" + time_difference);
     }
   }
-  public void onClick(View v) {
+  public void onClick(View v){
     switch (v.getId()){
 
       case R.id.buttonSetting:
@@ -74,7 +70,7 @@ public class MainActivity extends Activity implements View.OnClickListener,MyLis
 
       case R.id.buttonStart:
         btStart.setClickable(false);
-        gameRum=true;
+        gameRum=true;//for task
         timeInTask=0;
 
         task = new Task();//make a new task for the timer
@@ -83,23 +79,20 @@ public class MainActivity extends Activity implements View.OnClickListener,MyLis
         btSetting.setClickable(false);
         start_time = android.os.SystemClock.uptimeMillis();
         Log.i("aviramLog", "start_time: "+start_time);
-        animation.startGame();//plat start game
+        animation.startGame();//play- start game
         break;
-      case R.id.textViewBest:
+
+      case R.id.textViewBest://if user want to restart the record
         makeDialog();
         break;
     }
   }
-  private void makeDialog()
-  {
+  private void makeDialog(){
+  //the function make a 'Dialog message' to ensor the user want to delete the record
     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() { /*DialogInterface called while setting the AlertDialog Buttons */
       public void onClick(DialogInterface dialog, int which) {
-
-        //Here you can perform functions of Alert Dialog Buttons as shown
-
         switch (which){
           case DialogInterface.BUTTON_POSITIVE://delete from DB
-
             dal.deletRow(level, complexity);
             tvBest.setText("Best Result:\n");
             break;
@@ -118,14 +111,12 @@ public class MainActivity extends Activity implements View.OnClickListener,MyLis
             .setPositiveButton("Yes",dialogClickListener)
             .setNegativeButton("No", dialogClickListener).show();/* Setting the Alert message with buttons Yes and No */
   }
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
+  public boolean onCreateOptionsMenu(Menu menu){
     // Inflate the menu; this adds items to the action bar if it is present.
     getMenuInflater().inflate(R.menu.menu_main, menu);
     return true;
   }
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
+  public boolean onOptionsItemSelected(MenuItem item){
     // Handle action bar item clicks here. The action bar will
     // automatically handle clicks on the Home/Up button, so long
     // as you specify a parent activity in AndroidManifest.xml.
@@ -139,8 +130,7 @@ public class MainActivity extends Activity implements View.OnClickListener,MyLis
 
     return super.onOptionsItemSelected(item);
   }
-  private void Initialization()
-  {
+  private void Initialization(){
     dal = new DAL(getApplicationContext());//dal class to heandle with data-base
 
     btStart=(Button)findViewById(R.id.buttonStart);
@@ -154,20 +144,19 @@ public class MainActivity extends Activity implements View.OnClickListener,MyLis
 
     tvRecent=(TextView)findViewById(R.id.textViewRecent);
 
-    setSetting();
+    setSetting();//get data from Shared Preferences
 
     animation=(drawAnimation)findViewById(R.id.layoutToDraw);
     animation.setMyListener(this);
 
-
     tvBest.setText("Best Result:\n" + dal.getBestScore(level, complexity));//get the best score from DB
 
-    dal.getAllTimeEntriesCursor();//print to log all DB
+    //dal.getAllTimeEntriesCursor();//print to log all DB
 
     gameRum=false;
   }
-private void setSetting()
-{
+  private void setSetting(){
+
   sharedPref = getSharedPreferences("prefBestScore", MODE_PRIVATE);
   editor = sharedPref.edit();
   if (sharedPref.getInt("level",-1)==-1)//first time the app open
@@ -191,16 +180,13 @@ private void setSetting()
   Log.i("aviramLog", "complexity:" + complexity);//number of circle
 
 }
-  @Override
-  protected void onStop() {
+  protected void onStop(){
     super.onStop();
     gameRum=false;
-    animation.stopGame();
+    animation.stopGame();//cant click in screen
     Log.i("aviramLog", "onStop");
   }
-
-
-  public void onResume() {
+  public void onResume(){
     super.onResume();
     Log.i("aviramLog", "onResume");
 
@@ -209,28 +195,24 @@ private void setSetting()
     tvRecent.setText("Recent Result:\n" );
 
   }
-
   private class Task extends AsyncTask<Void, Integer, Integer> {
-
     @Override
     protected Integer doInBackground(Void... params) {
 
     int i=0;
-      while(gameRum)//the buttom 'statr' press
+      while(gameRum)//the button 'start' press
       {
         try {
-          Thread.sleep(100);
+          Thread.sleep(100);//every 0.1sec
         } catch (InterruptedException e) {
           e.printStackTrace();
         }
-
         publishProgress(i);
         i++;
       }
 
       return i;
     }
-
     protected void onProgressUpdate(Integer... value) {
       timeInTask=timeInTask+0.1;
 
@@ -238,16 +220,10 @@ private void setSetting()
       timeInTask = Double.valueOf(df.format(timeInTask));
 
       tvRecent.setText("current time:\n"+timeInTask);
-
     }
-
     protected void onPostExecute(Integer result) {
-      //super.onPostExecute(result);
-
       Log.i("aviramLog1", "+++onPostExecute: "+result);
       tvRecent.setText("Recent Result:\n" + time_difference + " sec");
-
     }
   }
-
 }

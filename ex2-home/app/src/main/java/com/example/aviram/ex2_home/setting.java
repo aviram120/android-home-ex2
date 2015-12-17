@@ -1,6 +1,5 @@
 package com.example.aviram.ex2_home;
 
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,28 +11,24 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-/**
- * Created by AVIRAM on 05/12/2015.
- */
 public class setting extends Activity implements View.OnClickListener {
-    EditText etComplexNum,etLevelNum;
-    Button save;
+    private EditText etComplexNum,etLevelNum;
+    private Button save;
     private SharedPreferences sharedPref;
     private SharedPreferences.Editor editor;
 
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.setting);
         Initialization();
     }
-
-    public void onClick(View v) {
+    public void onClick(View v){
         boolean flag=true;
         if (v.getId()==R.id.buttonSave)
         {
+            //====level field====
             String stLevelNum=etLevelNum.getText().toString();
-
             if (!stLevelNum.contains(".")&&(!stLevelNum.isEmpty()))
             {
                 int levelNum=Integer.parseInt(stLevelNum);//get the date form the field
@@ -54,11 +49,10 @@ public class setting extends Activity implements View.OnClickListener {
                 flag=false;
             }
 
-
+            //====Complex field====
             String stComplexNum=etComplexNum.getText().toString();
             if (!stComplexNum.contains(".")&&(!stComplexNum.isEmpty()))
             {
-
                 int complexNum=Integer.parseInt(stComplexNum);//get the date form the field
                 if ((complexNum>-1)&(complexNum<5))//check if the user add ok number
                 {
@@ -82,14 +76,10 @@ public class setting extends Activity implements View.OnClickListener {
                 Intent Inetent = new Intent(this,MainActivity.class);
                 startActivity(Inetent);
             }
-
-
         }
-        Log.i("aviramLog", "level:" + sharedPref.getInt("level", 100));
-        Log.i("aviramLog", "complexity:"+sharedPref.getInt("complexity",100));
     }
-    private void Initialization()
-    {
+    private void Initialization(){
+
         etComplexNum=(EditText)findViewById(R.id.editTextComplex);
         etLevelNum=(EditText)findViewById(R.id.editTextLevel);
         save=(Button)findViewById(R.id.buttonSave);

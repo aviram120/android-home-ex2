@@ -6,9 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-/**
- * Created by AVIRAM on 13/12/2015.
- */
 public class DAL {
 
   DBScore dbScore;
@@ -17,12 +14,11 @@ public class DAL {
   public DAL (Context context){
     dbScore=new DBScore(context);
   }
-  public boolean addScore(int level,int complexity, String time)
-   /*the function get level and complexity -as a key
-      and check in the dbd if the raw is existing if 'YES'-check if have new record-if 'YES' updata db
+  public boolean addScore(int level,int complexity, String time) {
+    /*the function get level and complexity -as a key
+      and check in  db if the raw is existing if 'YES'-check if have new record-if 'YES' updata db
       if the isn't existing in db - make a new raw in db
     * */
-  {
 
     boolean flag=false;
     String lastRecord;
@@ -58,10 +54,9 @@ public class DAL {
     }
     return flag;
   }
-  private boolean isRawExist(int level,int complexity)
-    /* the function check if the raw is existing in the DB
-    */
-  {
+  private boolean isRawExist(int level,int complexity) {
+  // the function check if the raw is existing in the DB
+
     boolean flag=true;
     db = dbScore.getReadableDatabase();
 
@@ -78,10 +73,9 @@ public class DAL {
     db.close();
     return flag;
   }
-  public String getBestScore(int level,int complexity)
-    /*the function return the record
-    * */
-  {
+  public String getBestScore(int level,int complexity) {
+  //the function return the record
+
     String time="";
     db = dbScore.getReadableDatabase();
 
@@ -103,10 +97,9 @@ public class DAL {
     db.close();
     return time;
   }
-  public void updataBestScore(int level,int complexity, String time)
-    /*the function updata the new record in db
-    * */
-  {
+  private void updataBestScore(int level,int complexity, String time) {
+  //the function updata the new record in db
+
     db = dbScore.getReadableDatabase();
 
     ContentValues valuse =  new ContentValues();
@@ -118,9 +111,9 @@ public class DAL {
     db.update(scorBestTable.scorBest.TABLE_NAME,valuse,where,whereARGS);
     db.close();
   }
-  public void getAllTimeEntriesCursor()
-            /*the function print into log all DB*/
-  {
+  public void getAllTimeEntriesCursor() {
+   //the function print into log all DB
+
    db = dbScore.getReadableDatabase();
 
     Cursor cursor = db.rawQuery("SELECT * FROM " + scorBestTable.scorBest.TABLE_NAME,null);
@@ -133,9 +126,9 @@ public class DAL {
               "time:" +cursor.getString(cursor.getColumnIndex(scorBestTable.scorBest.TIME)));
     }
   }
-  public void deletRow(int level,int complexity)
-          // the function delete raw from db
-  {
+  public void deletRow(int level,int complexity) {
+  // the function delete raw from db
+
     db = dbScore.getReadableDatabase();
 
     String where=scorBestTable.scorBest.LEVEL+"=? AND "+
@@ -147,9 +140,9 @@ public class DAL {
     Log.i("aviramLog", "delet level: "+level+", com: "+complexity);
 
   }
-  public void deletDB()
-            /*the function delete all DB*/
-  {
+  public void deletDB() {
+  //the function delete all DB
+
     db = dbScore.getReadableDatabase();
     db.execSQL("DELETE FROM " + scorBestTable.scorBest.TABLE_NAME); //delete all rows in a table
     db.close();
