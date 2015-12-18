@@ -26,8 +26,7 @@ public class  drawAnimation extends View  {
   private int rectWidth, rectHight;
   private boolean startGame;
   private final int LEVEL;
-  private ArrayList<MyListener> listeners = new ArrayList<MyListener>();
-
+  private MyListener mListeners;
 
   public drawAnimation(Context context, AttributeSet attrs) {
     super(context, attrs);
@@ -43,9 +42,18 @@ public class  drawAnimation extends View  {
     rectWidth = 400;
     rectHight = 200;
     startGame=false;
+
+    onAttach(contextSAVE);
   }
-  public void setMyListener(MyListener listener){
-    listeners.add(listener);
+  public void onAttach(Context context) {
+    //set the listener
+
+    try {
+      mListeners = (MyListener) context;
+    } catch (ClassCastException e) {
+      throw new ClassCastException(context.toString()
+              + " must implement mMyListener");
+    }
   }
   protected void onDraw(Canvas canvas) {
     super.onDraw(canvas);
@@ -176,9 +184,7 @@ public class  drawAnimation extends View  {
           if (level == 0) {
             level = LEVEL;
             startGame=false;
-            for (MyListener listener:listeners){//send to MainActivity that finish the game
-              listener.onGameFinishLisrener();
-            }
+            mListeners.onGameFinishLisrener();
           }
           invalidate();
         }

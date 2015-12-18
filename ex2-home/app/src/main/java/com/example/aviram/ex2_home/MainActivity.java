@@ -45,6 +45,7 @@ public class MainActivity extends Activity implements View.OnClickListener,MyLis
     gameRum=false;//for task
     btSetting.setClickable(true);
     btStart.setClickable(true);
+    tvBest.setClickable(true);
     Log.i("aviramLog", "======GameFinish======");
 
     long elapse_time = android.os.SystemClock.uptimeMillis() - start_time;
@@ -70,6 +71,7 @@ public class MainActivity extends Activity implements View.OnClickListener,MyLis
 
       case R.id.buttonStart:
         btStart.setClickable(false);
+        tvBest.setClickable(false);
         gameRum=true;//for task
         timeInTask=0;
 
@@ -83,7 +85,7 @@ public class MainActivity extends Activity implements View.OnClickListener,MyLis
         break;
 
       case R.id.textViewBest://if user want to restart the record
-        makeDialog();
+          makeDialog();
         break;
     }
   }
@@ -147,7 +149,6 @@ public class MainActivity extends Activity implements View.OnClickListener,MyLis
     setSetting();//get data from Shared Preferences
 
     animation=(drawAnimation)findViewById(R.id.layoutToDraw);
-    animation.setMyListener(this);
 
     tvBest.setText("Best Result:\n" + dal.getBestScore(level, complexity));//get the best score from DB
 
@@ -192,6 +193,7 @@ public class MainActivity extends Activity implements View.OnClickListener,MyLis
 
     btStart.setClickable(true);
     btSetting.setClickable(true);
+    tvBest.setClickable(true);
     tvRecent.setText("Recent Result:\n" );
 
   }
